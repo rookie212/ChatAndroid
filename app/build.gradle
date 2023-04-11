@@ -1,0 +1,84 @@
+plugins {
+    id 'com.android.application'
+//    #34 Add the Google services Gradle plugin apply plugin prefix changed as id
+//    #35 in this step from tools/firebase/cloud messaging/Setup Firebase Cloud Messaging Connect sould be connected
+    //so clicked the Add FCM to your app
+    id 'com.google.gms.google-services'
+}
+
+
+android {
+    namespace 'com.example.chatykapp'
+    compileSdk 33
+
+    defaultConfig {
+//        #32This id is used for GoogleFirebase
+        applicationId "com.example.chatykapp"
+        minSdk 24
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+//        #57
+        multiDexEnabled true
+//        #58 After 57 sync and run the app and click sign in did you see the toast? Go to firestore console and refresh it you wiil see the users collection
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+//    #6
+    buildFeatures {
+        viewBinding true
+    }
+//    #7 Press sync now
+}
+
+dependencies {
+
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+//    #4
+    //Scalable Size unit (support for different screen sizes)
+    implementation 'com.intuit.sdp:sdp-android:1.0.6'
+    implementation 'com.intuit.ssp:ssp-android:1.0.6'
+
+    //    #5
+    //Rounded imageView
+    implementation 'com.makeramen:roundedimageview:2.3.0'
+
+    //#52 Firebase
+    //#53 Fo to FirebaseConsole/FirestoreDatabase/StartinTestMode
+
+//    #36 as you can see, dependency for firebase cloud messaging is added
+    implementation 'com.google.firebase:firebase-messaging-ktx:23.1.2'
+//    #51 as you can see, dependency for the firestore database is added, but there is a newer version available,
+    //so I am changing the version to a newer one
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.4.5'
+/*#56 Enabling MultiDex
+Android application (APK) files contain executable bytecode files in the form of Dalvik Executable(DEX) files,
+which contain the compiled code used to run your app. The Dalvik Executable specification limits the total number of
+methods that can be referenced within a single DEX file to 56,536, including Android framework methods, library methods,
+and methods in your own code. Getting past this limit requires that you configure your app build process to generate more
+than one DEX file, known as MultiDex configuration.*/
+    implementation 'androidx.multidex:multidex:2.0.1'
+
+//    #308 Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
+
+}
+
