@@ -25,12 +25,6 @@
         <activity
             android:name=".activities.SignUpActivity"
             android:windowSoftInputMode="adjustResize" />
-<!--        <receiver android:name=".activities.SignInActivity"-->
-<!--            android:exported="true">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="com.humber.parenthood.ChatActivity" />-->
-<!--            </intent-filter>-->
-<!--        </receiver>-->
         <activity
             android:name=".activities.SignInActivity"
             android:exported="true"
