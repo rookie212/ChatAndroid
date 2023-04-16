@@ -67,7 +67,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging-ktx:23.1.2'
 //    #51 as you can see, dependency for the firestore database is added, but there is a newer version available,
     //so I am changing the version to a newer one
-    implementation 'com.google.firebase:firebase-firestore-ktx:24.4.5'
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.5.0'
 /*#56 Enabling MultiDex
 Android application (APK) files contain executable bytecode files in the form of Dalvik Executable(DEX) files,
 which contain the compiled code used to run your app. The Dalvik Executable specification limits the total number of
