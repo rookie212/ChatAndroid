@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--#142 animated layoutchanges and background-->
+<?xml version="1.0" encoding="utf-8"?><!--#142 animated layout changes and background-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,7 +8,7 @@
     android:background="@color/primary"
     tools:context=".activities.UsersActivity">
 
-<!--    #144-->
+    <!--    #144-->
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageBack"
         android:layout_width="@dimen/_30sdp"
@@ -20,11 +19,11 @@
         android:background="@drawable/background_icon"
         android:padding="@dimen/_6sdp"
         android:src="@drawable/ic_back"
+        android:tint="@color/primary"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:tint="@color/primary"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
-<!--    #145-->
+    <!--    #145-->
     <TextView
 
         android:layout_width="wrap_content"
@@ -36,10 +35,9 @@
         app:layout_constraintBaseline_toBottomOf="@id/imageBack"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageBack"
-        />
+        app:layout_constraintTop_toTopOf="@+id/imageBack" />
 
-<!--    #147-->
+    <!--    #147-->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -48,7 +46,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/imageBack">
 
-<!--        #148 give your attention layoutManager here-->
+        <!--        #148 give your attention layoutManager here-->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/usersRecyclerView"
             android:layout_width="match_parent"
@@ -58,16 +56,16 @@
             android:overScrollMode="never"
             android:padding="@dimen/_20sdp"
             android:visibility="gone"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-<!--        #149-->
+        <!--        #149-->
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="@dimen/_25sdp"
             android:layout_height="@dimen/_25sdp"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center" />
 
-<!--        #150-->
+        <!--        #150-->
         <TextView
             android:id="@+id/textErrorMessage"
             android:layout_width="match_parent"

@@ -7,14 +7,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.chatykapp.utilities.Constants;
 import com.example.chatykapp.utilities.PreferenceManager;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 //#299 extends
 public class BaseActivity extends AppCompatActivity {
 
-//    #302 starts
+    //    #302 starts
     private DocumentReference documentReference;
 //    #302 ends
 //    #301 starts Bundle savedInstanceState fragment activity

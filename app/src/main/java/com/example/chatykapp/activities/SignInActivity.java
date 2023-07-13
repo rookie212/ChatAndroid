@@ -1,21 +1,18 @@
 package com.example.chatykapp.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.chatykapp.R;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.chatykapp.databinding.ActivitySignInBinding;
 import com.example.chatykapp.utilities.Constants;
 import com.example.chatykapp.utilities.PreferenceManager;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.HashMap;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -25,7 +22,7 @@ public class SignInActivity extends AppCompatActivity {
     //As we've enabled viewBinding for our project, the binding class for each XML layout will be generated automatically.
     //Here 'ActivitySignInBinding' class is automatically generated from layout file: 'activity_sign_in;
 
-//    #95 starts
+    //    #95 starts
     private PreferenceManager preferenceManager;
 //    #95 ends
 
@@ -37,7 +34,7 @@ public class SignInActivity extends AppCompatActivity {
 //        #96 ends
 
 //        #98starts
-        if(preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)){
+        if (preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)) {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             finish();
@@ -54,10 +51,10 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     //    #25
-    private void setListeners(){
+    private void setListeners() {
         //when you write binding. 'As you can see, an instance of binding class contains direct references to all views that
         //have an ID in the corresponding layout.'
-        binding.textCreateNewAccount.setOnClickListener( v ->
+        binding.textCreateNewAccount.setOnClickListener(v ->
                 startActivity(new Intent(getApplicationContext(), SignUpActivity.class)));
 //        #90 starts
         binding.buttonSignIn.setOnClickListener(v -> {
@@ -88,8 +85,8 @@ public class SignInActivity extends AppCompatActivity {
 //    }
 //    #59 if 58 is ok you can delete 54 55 and then optimized related import packages.
 
-//#89 starts
-    private void signIn(){
+    //#89 starts
+    private void signIn() {
 //        #97starts
         loading(true);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
@@ -99,7 +96,7 @@ public class SignInActivity extends AppCompatActivity {
                 .get()
                 .addOnCompleteListener(task -> {
 
-                    if(task.isSuccessful() && task.getResult() != null && task.getResult().getDocuments().size() >0){
+                    if (task.isSuccessful() && task.getResult() != null && task.getResult().getDocuments().size() > 0) {
                         DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
                         preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
                         preferenceManager.putString(Constants.KEY_USER_ID, documentSnapshot.getId());
@@ -108,7 +105,7 @@ public class SignInActivity extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
-                    }else{
+                    } else {
                         loading(false);
                         showToast("Unable to sign in");
                     }
@@ -124,18 +121,19 @@ public class SignInActivity extends AppCompatActivity {
             binding.buttonSignIn.setVisibility(View.INVISIBLE);
             binding.progressBar.setVisibility(View.VISIBLE);
 
-        }else {
+        } else {
             binding.progressBar.setVisibility(View.INVISIBLE);
             binding.buttonSignIn.setVisibility(View.VISIBLE);
         }
     }
 //    #94Ends
 
-//    #87
-    private void showToast(String message){
+    //    #87
+    private void showToast(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
-//    #88
+
+    //    #88
     private Boolean isValidSignInDetails() {
         if (binding.inputEmail.getText().toString().trim().isEmpty()) {
 
@@ -151,7 +149,7 @@ public class SignInActivity extends AppCompatActivity {
             showToast("Enter password");
             return false;
 
-        }else {
+        } else {
             return true;
         }
 

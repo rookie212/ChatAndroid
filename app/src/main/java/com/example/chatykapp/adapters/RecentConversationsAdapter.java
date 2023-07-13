@@ -17,18 +17,18 @@ import com.example.chatykapp.models.User;
 import java.util.List;
 
 //#264
-//#269 extends RecylerView.adapter
+//#269 extends RecyclerView.adapter
 public class RecentConversationsAdapter extends RecyclerView.Adapter<RecentConversationsAdapter.ConversionViewHolder> {
 
-//    #267 Starts
+    //    #267 Starts
     private final List<ChatMessage> chatMessages;
 //    #267 Ends
 
-//    #292 starts
+    //    #292 starts
     private final ConversionListener conversionListener;
 //    #292 ends
 
-//    #268 starts generate/constructor
+    //    #268 starts generate/constructor
 // #293 an extra parameter added RecentConversationsAdapter: ConversionListener
     public RecentConversationsAdapter(List<ChatMessage> chatMessages, ConversionListener conversionListener) {
         this.chatMessages = chatMessages;
@@ -37,7 +37,7 @@ public class RecentConversationsAdapter extends RecyclerView.Adapter<RecentConve
     }
 //    #268 ends
 
-//    #270 starts
+    //    #270 starts
     @NonNull
     @Override
     public ConversionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -67,13 +67,22 @@ public class RecentConversationsAdapter extends RecyclerView.Adapter<RecentConve
     }
     //    #270 ends
 
+    //    #265
+    private Bitmap getConversionImage(String encodedImage) {
+        byte[] bytes = Base64.decode(encodedImage, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+    }
+//    #266 ends
+
     //    #266 starts
-    class ConversionViewHolder extends RecyclerView.ViewHolder{
-        ItemContainerRecentConversionBinding binding;
+    class ConversionViewHolder extends RecyclerView.ViewHolder {
+        final ItemContainerRecentConversionBinding binding;
+
         ConversionViewHolder(ItemContainerRecentConversionBinding itemContainerRecentConversionBinding) {
             super(itemContainerRecentConversionBinding.getRoot());
             binding = itemContainerRecentConversionBinding;
         }
+
         void setData(ChatMessage chatMessage) {
             binding.imageProfile.setImageBitmap(getConversionImage(chatMessage.conversionImage));
             binding.textName.setText(chatMessage.conversionName);
@@ -88,14 +97,5 @@ public class RecentConversationsAdapter extends RecyclerView.Adapter<RecentConve
             });
 //                #295 ends
         }
-    }
-//    #266 ends
-
-
-
-    //    #265
-    private Bitmap getConversionImage(String encodedImage) {
-        byte[] bytes = Base64.decode(encodedImage, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 }
