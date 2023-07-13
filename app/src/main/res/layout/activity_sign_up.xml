@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--#18-->
+<?xml version="1.0" encoding="utf-8"?><!--#18-->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -28,7 +27,7 @@
             android:textStyle="bold" />
 
         <!--        #20-->
-<!--        #74 add id to FrameLayout-->
+        <!--        #74 add id to FrameLayout-->
         <FrameLayout
             android:id="@+id/layoutImage"
             android:layout_width="wrap_content"
@@ -41,9 +40,9 @@
                 android:layout_height="@dimen/_80sdp"
                 android:background="@drawable/background_image"
                 android:scaleType="centerCrop"
-                app:riv_oval="true"/>
+                app:riv_oval="true" />
 
-<!--            #78 add id-->
+            <!--            #78 add id-->
             <TextView
                 android:id="@+id/textAddImage"
                 android:layout_width="wrap_content"
@@ -51,7 +50,7 @@
                 android:layout_gravity="center"
                 android:text="@string/add_image"
                 android:textColor="@color/secondary_text"
-                android:textSize="@dimen/_10ssp"/>
+                android:textSize="@dimen/_10ssp" />
 
         </FrameLayout>
 
@@ -118,15 +117,15 @@
             android:textColor="@color/primary_text"
             android:textSize="@dimen/_13ssp" />
 
-<!--        #67-->
+        <!--        #67-->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_16sdp"
             android:animateLayoutChanges="true">
 
-<!--            #68 material button into the 67 frameLayout
-#69 and no need to marginTop -->
+            <!--            #68 material button into the 67 frameLayout
+            #69 and no need to marginTop -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonSignUp"
                 android:layout_width="match_parent"
@@ -135,15 +134,15 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/_13ssp"
                 android:textStyle="bold"
-                app:cornerRadius="@dimen/_8sdp"/>
+                app:cornerRadius="@dimen/_8sdp" />
 
-<!--            #70 Progress Bar-->
+            <!--            #70 Progress Bar-->
             <ProgressBar
                 android:id="@+id/progressBar"
                 android:layout_width="@dimen/_25sdp"
                 android:layout_height="@dimen/_25sdp"
                 android:layout_gravity="center"
-                android:visibility="invisible"/>
+                android:visibility="invisible" />
         </FrameLayout>
 
         <TextView
@@ -154,7 +153,7 @@
             android:text="@string/sign_in"
             android:textColor="@color/primary"
             android:textSize="@dimen/_13ssp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
     </LinearLayout>
 

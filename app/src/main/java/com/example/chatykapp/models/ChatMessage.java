@@ -6,11 +6,11 @@ import java.util.Date;
 public class ChatMessage {
 
     public String senderId, receiverId, message, dateTime;
-//    #243 starts
+    //    #243 starts
     public Date dateObject;
 //    #243 ends
 
-//    #263 starts
+    //    #263 starts
     public String conversionId, conversionName, conversionImage;
 //    #263 ends
 }

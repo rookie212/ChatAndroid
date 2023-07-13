@@ -18,15 +18,15 @@ import java.util.List;
 
 //#141
 //#197 implements UserListener
-//#307 AppCompatActivty replaced with BaseActivity and run one device and check user availability in firebase console.
+//#307 AppCompatActivity replaced with BaseActivity and run one device and check user availability in firebase console.
 
 public class UsersActivity extends BaseActivity implements UserListener {
 
-//    #156 starts
+    //    #156 starts
     private ActivityUsersBinding binding;
 //    #156 ends
 
-//    #160 starts
+    //    #160 starts
     private PreferenceManager preferenceManager;
 //    #160 ends
 
@@ -51,13 +51,13 @@ public class UsersActivity extends BaseActivity implements UserListener {
 //        #165 ends
     }
 
-//    #166 starts
+    //    #166 starts
     private void setListeners() {
         binding.imageBack.setOnClickListener(v -> onBackPressed());
     }
 //    #166 ends
 
-//    #164 starts
+    //    #164 starts
     private void getUsers() {
         loading(true);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
@@ -66,10 +66,10 @@ public class UsersActivity extends BaseActivity implements UserListener {
                 .addOnCompleteListener(task -> {
                     loading(false);
                     String currentUserId = preferenceManager.getString(Constants.KEY_USER_ID);
-                    if(task.isSuccessful() && task.getResult() != null){
+                    if (task.isSuccessful() && task.getResult() != null) {
                         List<User> users = new ArrayList<>();
                         for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
-                            if(currentUserId.equals(queryDocumentSnapshot.getId())) {
+                            if (currentUserId.equals(queryDocumentSnapshot.getId())) {
                                 continue;
                             }
                             User user = new User();
@@ -82,33 +82,33 @@ public class UsersActivity extends BaseActivity implements UserListener {
 //                            #240 ends
                             users.add(user);
                         }
-                        if(users.size() > 0){
+                        if (users.size() > 0) {
 //                            #198 adds this as parameter next to the users
-                            UsersAdapter usersAdapter = new UsersAdapter(users,this);
+                            UsersAdapter usersAdapter = new UsersAdapter(users, this);
                             binding.usersRecyclerView.setAdapter(usersAdapter);
                             binding.usersRecyclerView.setVisibility(View.VISIBLE);
-                        }else {
+                        } else {
                             showErrorMessage();
                         }
-                    }else {
+                    } else {
                         showErrorMessage();
                     }
                 });
     }
 //    #164 ends
 
-//    #163 starts
+    //    #163 starts
     private void showErrorMessage() {
-        binding.textErrorMessage.setText(String.format("%s","No user available"));
+        binding.textErrorMessage.setText(String.format("%s", "No user available"));
         binding.textErrorMessage.setVisibility(View.VISIBLE);
     }
 //    #163 ends
 //    #159 starts
 
     private void loading(Boolean isLoading) {
-        if(isLoading) {
+        if (isLoading) {
             binding.progressBar.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             binding.progressBar.setVisibility(View.INVISIBLE);
         }
     }

@@ -17,48 +17,44 @@ import java.util.List;
 //#219 extends recyclerView.adapter
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-//    #216 starts
+    //    #221 starts
+    public static final int VIEW_TYPE_SENT = 1;
+    //    #216 ends
+    public static final int VIEW_TYPE_RECEIVED = 2;
+    //    #214 ends
+    //    #216 starts
     private final List<ChatMessage> chatMessages;
-//    #216 ends
-
-//    #214 starts
+    //    #217 ends
+    //    #217 starts
+    private final String senderId;
+    //    #214 starts
 //    #333 final is reduced
     private Bitmap receiverProfileImage;
-//    #214 ends
-
-//    #217 starts
-    private final String senderId;
-//    #217 ends
-
-//    #221 starts
-    public static final int VIEW_TYPE_SENT = 1;
-    public static final int VIEW_TYPE_RECEIVED = 2;
-//    #221 endss
-//    #334 start
-    public void setReceiverProfileImage(Bitmap bitmap){
-        receiverProfileImage = bitmap;
-    }
-//    #334 ends
-
-//    #218 GENERATE/CONSTRUCTOR
-
 
     public ChatAdapter(List<ChatMessage> chatMessages, Bitmap receiverProfileImage, String senderId) {
         this.chatMessages = chatMessages;
         this.receiverProfileImage = receiverProfileImage;
         this.senderId = senderId;
     }
+//    #334 ends
+
+//    #218 GENERATE/CONSTRUCTOR
+
+    //    #221 ends
+//    #334 start
+    public void setReceiverProfileImage(Bitmap bitmap) {
+        receiverProfileImage = bitmap;
+    }
 
 //    #218 ends
 
 //    #220 Generate/implement methods
 
-
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 //        #223 starts
-        if(viewType == VIEW_TYPE_SENT){
+        if (viewType == VIEW_TYPE_SENT) {
             return new SentMessageViewHolder(
                     ItemContainerSentMessageBinding.inflate(
                             LayoutInflater.from(parent.getContext()),
@@ -66,7 +62,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             false
                     )
             );
-        }else {
+        } else {
             return new ReceivedMessageViewHolder(
                     ItemContainerReceivedMessageBinding.inflate(
                             LayoutInflater.from(parent.getContext()),
@@ -85,7 +81,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (getItemViewType(position) == VIEW_TYPE_SENT) {
             ((SentMessageViewHolder) holder).setData(chatMessages.get(position));
         } else {
-            ((ReceivedMessageViewHolder) holder).setData(chatMessages.get(position),receiverProfileImage);
+            ((ReceivedMessageViewHolder) holder).setData(chatMessages.get(position), receiverProfileImage);
         }
 //        #224 ends
     }
@@ -102,9 +98,9 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        if(chatMessages.get(position).senderId.equals(senderId)) {
+        if (chatMessages.get(position).senderId.equals(senderId)) {
             return VIEW_TYPE_SENT;
-        }else {
+        } else {
             return VIEW_TYPE_RECEIVED;
         }
     }
@@ -112,7 +108,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     //    #222 ends
     static class SentMessageViewHolder extends RecyclerView.ViewHolder {
 
-//        #210
+        //        #210
         private final ItemContainerSentMessageBinding binding;
 
         //#211 As we've enabled viewBinding for our project, the binding class
@@ -120,20 +116,21 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         //Her 'ItemContainerSentMessageBinding' class is automatically
 //        generated from our layout file: 'item_container_sent_message'
 
-        SentMessageViewHolder(ItemContainerSentMessageBinding itemContainerSentMessageBinding){
+        SentMessageViewHolder(ItemContainerSentMessageBinding itemContainerSentMessageBinding) {
 
 //            #212
             super(itemContainerSentMessageBinding.getRoot());
             binding = itemContainerSentMessageBinding;
         }
 
-//        #213
+        //        #213
         void setData(ChatMessage chatMessage) {
             binding.textMessage.setText(chatMessage.message);
             binding.textDateTime.setText(chatMessage.dateTime);
         }
     }
-//    #215 starts
+
+    //    #215 starts
     static class ReceivedMessageViewHolder extends RecyclerView.ViewHolder {
 
         private final ItemContainerReceivedMessageBinding binding;
@@ -145,11 +142,12 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             super(itemContainerReceivedMessageBinding.getRoot());
             binding = itemContainerReceivedMessageBinding;
         }
-        void setData(ChatMessage chatMessage, Bitmap receiverProfileImage){
+
+        void setData(ChatMessage chatMessage, Bitmap receiverProfileImage) {
             binding.textMessage.setText(chatMessage.message);
             binding.textDateTime.setText(chatMessage.dateTime);
 //            #331 starts
-            if(receiverProfileImage != null) {
+            if (receiverProfileImage != null) {
 //#332 below code was below the if block and it is added into it
                 binding.imageProfile.setImageBitmap(receiverProfileImage);
             }

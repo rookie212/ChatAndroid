@@ -25,7 +25,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -34,7 +33,7 @@ import java.util.List;
 // To refresh the project panel we just toggle the 'Compact Middle Packages'.
 
 //#296 implements conversionListener
-//#306 AppCompatActivty replaced with BaseActivity
+//#306 AppCompatActivity replaced with BaseActivity
 public class MainActivity extends BaseActivity implements ConversionListener {
 
 //    #107 starts
@@ -42,109 +41,27 @@ public class MainActivity extends BaseActivity implements ConversionListener {
     //Here 'ActivityMainBinding' class is automatically generated from our layout file: 'activity_main'
 
     private ActivityMainBinding binding;
-//    #107 ends
+    //    #107 ends
 //    #110starts
     private PreferenceManager preferenceManager;
-//    #110ends
+    //    #110ends
 //    #276 starts
     private List<ChatMessage> conversations;
     private RecentConversationsAdapter conversationsAdapter;
-    private FirebaseFirestore database;
-//    #276 ends
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-//        #108starts
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-//            #108ends
-//        #109 starts
-//        set contentView changes
-//        setContentView(R.layout.activity_main);
-        setContentView(binding.getRoot());
-//        #109 ends
-//        #111 starts
-        preferenceManager = new PreferenceManager(getApplicationContext());
-        //        #111 ends
-//#278 starts
-        init();
-//        #278 ends
-//        #113 starts
-        loadUserDetails();
-//        #113 ends and runs it
-//        #118 starts
-        getToken();
-//        #118 ends here you can go to firestore Database and check user fields and
-        //As you can see here, there is no FCM token for the user in the database"
-        //And now run it and after run it you will see fcmtoken is inserted your database.
-        //Good job!
-//        #121 starts
-        setListeners();
-//        #121 ends and clean unnecessary imports then run it
-        //when you click log out in the database fcm token will be deleted. when you sign it will come back
-//        #290 starts
-        listenConversations();
-//        #290 ends run multiple device
-    }
-
-//    #277 starts
-    private void init(){
-        conversations = new ArrayList<>();
-        //#297 is related 296 adapter needs to get 'this' parameter as addon
-        conversationsAdapter = new RecentConversationsAdapter(conversations, this);
-        binding.conversationsRecyclerView.setAdapter(conversationsAdapter);
-        database = FirebaseFirestore.getInstance();
-    }
-//    #277 ends
-//    #120starts
-    private void setListeners(){
-
-        binding.imageSignOut.setOnClickListener(v -> signOut());
-//        #154 starts
-        binding.fabNewChat.setOnClickListener(v ->
-                startActivity(new Intent(getApplicationContext(), UsersActivity.class)));
-//        #154 ends
-    }
-//#120 ends
-
-//    #112 starts
-    private void loadUserDetails() {
-        binding.textName.setText(preferenceManager.getString(Constants.KEY_NAME));
-        byte[] bytes = Base64.decode(preferenceManager.getString(Constants.KEY_IMAGE), Base64.DEFAULT);
-        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-        binding.imageProfile.setImageBitmap(bitmap);
-    }
-//    #112 ends
-//    #115 starts
-    private void showToast(String message){
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-    }
-//    #115 ends
-
-//    #289 starts
-    private void listenConversations(){
-        database.collection(Constants.KEY_COLLECTION_CONVERSATIONS)
-                .whereEqualTo(Constants.KEY_SENDER_ID, preferenceManager.getString(Constants.KEY_USER_ID))
-                .addSnapshotListener(eventListener);
-        database.collection(Constants.KEY_COLLECTION_CONVERSATIONS)
-                .whereEqualTo(Constants.KEY_RECEIVER_ID, preferenceManager.getString(Constants.KEY_USER_ID))
-                .addSnapshotListener(eventListener);
-    }
-//    #289 ends
-
-//    #288 starts evenListener firebase.firestore
+    //    #288 starts evenListener firebase.firestore
     private final EventListener<QuerySnapshot> eventListener = (value, error) -> {
-        if(error != null) {
+        if (error != null) {
             return;
         }
-        if(value != null) {
+        if (value != null) {
             for (DocumentChange documentChange : value.getDocumentChanges()) {
-                if(documentChange.getType() == DocumentChange.Type.ADDED) {
+                if (documentChange.getType() == DocumentChange.Type.ADDED) {
                     String senderId = documentChange.getDocument().getString(Constants.KEY_SENDER_ID);
                     String receiverId = documentChange.getDocument().getString(Constants.KEY_RECEIVER_ID);
                     ChatMessage chatMessage = new ChatMessage();
                     chatMessage.senderId = senderId;
                     chatMessage.receiverId = receiverId;
-                    if (preferenceManager.getString(Constants.KEY_USER_ID).equals(senderId)){
+                    if (preferenceManager.getString(Constants.KEY_USER_ID).equals(senderId)) {
                         chatMessage.conversionImage = documentChange.getDocument().getString(Constants.KEY_RECEIVER_IMAGE);
                         chatMessage.conversionName = documentChange.getDocument().getString(Constants.KEY_RECEIVER_NAME);
                         chatMessage.conversionId = documentChange.getDocument().getString(Constants.KEY_RECEIVER_ID);
@@ -170,21 +87,106 @@ public class MainActivity extends BaseActivity implements ConversionListener {
                 }
             }
             //make sure you wrote these lines after the for loop and NOT inside it
-            Collections.sort(conversations, (obj1, obj2) -> obj2.dateObject.compareTo(obj1.dateObject));
+            conversations.sort((obj1, obj2) -> obj2.dateObject.compareTo(obj1.dateObject));
             conversationsAdapter.notifyDataSetChanged();
             binding.conversationsRecyclerView.smoothScrollToPosition(0);
             binding.conversationsRecyclerView.setVisibility(View.VISIBLE);
             binding.progressBar.setVisibility(View.GONE);
         }
     };
-//    #288 ends
+    private FirebaseFirestore database;
+
+    //    #276 ends
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+//        #108starts
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+//            #108ends
+//        #109 starts
+//        set contentView changes
+//        setContentView(R.layout.activity_main);
+        setContentView(binding.getRoot());
+//        #109 ends
+//        #111 starts
+        preferenceManager = new PreferenceManager(getApplicationContext());
+        //        #111 ends
+//#278 starts
+        init();
+//        #278 ends
+//        #113 starts
+        loadUserDetails();
+//        #113 ends and runs it
+//        #118 starts
+        getToken();
+//        #118 ends here you can go to firestore Database and check user fields and
+        //As you can see here, there is no FCM token for the user in the database"
+        //And now run it and after run it you will see fcm token is inserted your database.
+        //Good job!
+//        #121 starts
+        setListeners();
+//        #121 ends and clean unnecessary imports then run it
+        //when you click log out in the database fcm token will be deleted. when you sign it will come back
+//        #290 starts
+        listenConversations();
+//        #290 ends run multiple device
+    }
+
+    //    #277 starts
+    private void init() {
+        conversations = new ArrayList<>();
+        //#297 is related 296 adapter needs to get 'this' parameter as addon
+        conversationsAdapter = new RecentConversationsAdapter(conversations, this);
+        binding.conversationsRecyclerView.setAdapter(conversationsAdapter);
+        database = FirebaseFirestore.getInstance();
+    }
+//#120 ends
+
+    //    #277 ends
+//    #120starts
+    private void setListeners() {
+
+        binding.imageSignOut.setOnClickListener(v -> signOut());
+//        #154 starts
+        binding.fabNewChat.setOnClickListener(v ->
+                startActivity(new Intent(getApplicationContext(), UsersActivity.class)));
+//        #154 ends
+    }
+
+    //    #112 starts
+    private void loadUserDetails() {
+        binding.textName.setText(preferenceManager.getString(Constants.KEY_NAME));
+        byte[] bytes = Base64.decode(preferenceManager.getString(Constants.KEY_IMAGE), Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        binding.imageProfile.setImageBitmap(bitmap);
+    }
+//    #115 ends
+
+    //    #112 ends
+//    #115 starts
+    private void showToast(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+//    #289 ends
+
+    //    #289 starts
+    private void listenConversations() {
+        database.collection(Constants.KEY_COLLECTION_CONVERSATIONS)
+                .whereEqualTo(Constants.KEY_SENDER_ID, preferenceManager.getString(Constants.KEY_USER_ID))
+                .addSnapshotListener(eventListener);
+        database.collection(Constants.KEY_COLLECTION_CONVERSATIONS)
+                .whereEqualTo(Constants.KEY_RECEIVER_ID, preferenceManager.getString(Constants.KEY_USER_ID))
+                .addSnapshotListener(eventListener);
+    }
+
+    //    #288 ends
 //    #117 starts
-    private void getToken(){
+    private void getToken() {
         FirebaseMessaging.getInstance().getToken().addOnSuccessListener(this::updateToken);
     }
 //    #117 ends
 
-//    #116 starts
+    //    #116 starts
     private void updateToken(String token) {
 //        #326 starts
         preferenceManager.putString(Constants.KEY_FCM_TOKEN, token);
@@ -193,15 +195,15 @@ public class MainActivity extends BaseActivity implements ConversionListener {
         DocumentReference documentReference = database.collection(Constants.KEY_COLLECTION_USERS).document(
                 preferenceManager.getString(Constants.KEY_USER_ID));
 
-        documentReference.update(Constants.KEY_FCM_TOKEN,token)
+        documentReference.update(Constants.KEY_FCM_TOKEN, token)
                 //#155 below line is deleted actually we don't need it but for now I commented then probably it will be deleted
 //                .addOnSuccessListener(unused -> showToast("Token updated successfully"))
                 .addOnFailureListener(e -> showToast("Unable to update token"));
     }
 //    #116 ends
 
-//    #119 starts
-    private void signOut(){
+    //    #119 starts
+    private void signOut() {
         showToast("Signing out...");
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         DocumentReference documentReference =
@@ -218,7 +220,8 @@ public class MainActivity extends BaseActivity implements ConversionListener {
                 })
                 .addOnFailureListener(e -> showToast("Unable to sign out"));
     }
-//    #119 ends
+
+    //    #119 ends
 //    #298 starts
     @Override
     public void onConversionClicked(User user) {

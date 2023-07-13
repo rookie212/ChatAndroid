@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
     <!-- #46 -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
 
     <application
@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatYKApp"
         tools:targetApi="31">
-<!--        #231 chatactivity adjustresize is added then run-->
+        <!--        #231 chatactivity adjustresize is added then run-->
         <activity
             android:name=".activities.ChatActivity"
             android:windowSoftInputMode="adjustResize" />

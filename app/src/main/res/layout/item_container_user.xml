@@ -1,12 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--#123-->
+<?xml version="1.0" encoding="utf-8"?><!--#123-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="@dimen/_8sdp">
 
-<!--    #124-->
+    <!--    #124-->
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/imageProfile"
         android:layout_width="@dimen/_35sdp"
@@ -15,20 +14,18 @@
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:riv_oval="true"
-        />
+        app:riv_oval="true" />
 
-<!--    #125-->
+    <!--    #125-->
     <View
         android:id="@+id/viewSupporter"
         android:layout_width="1dp"
         android:layout_height="1dp"
         app:layout_constraintBottom_toBottomOf="@id/imageProfile"
         app:layout_constraintStart_toEndOf="@id/imageProfile"
-        app:layout_constraintTop_toTopOf="@id/imageProfile"
-        />
+        app:layout_constraintTop_toTopOf="@id/imageProfile" />
 
-<!--    #126-->
+    <!--    #126-->
     <TextView
         android:id="@+id/textName"
         android:layout_width="0dp"
@@ -41,10 +38,9 @@
         android:textSize="@dimen/_13ssp"
         app:layout_constraintBottom_toTopOf="@id/viewSupporter"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageProfile"
-        />
+        app:layout_constraintStart_toEndOf="@+id/imageProfile" />
 
-<!--    #127-->
+    <!--    #127-->
 
     <TextView
         android:id="@+id/textEmail"
@@ -58,7 +54,6 @@
         android:textSize="@dimen/_10ssp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/imageProfile"
-        app:layout_constraintTop_toBottomOf="@id/viewSupporter"
-        />
+        app:layout_constraintTop_toBottomOf="@id/viewSupporter" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

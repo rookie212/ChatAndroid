@@ -26,14 +26,13 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -45,12 +44,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 //#168
-//#305 AppCompatActivty replaced with BaseActivity
+//#305 AppCompatActivity replaced with BaseActivity
 public class ChatActivity extends BaseActivity {
 
-//    #201 starts
+    //    #201 starts
     private ActivityChatBinding binding;
-//    #201 ends
+    //    #201 ends
 //    #203 starts
     private User receiverUser;
 //    #203 ends
@@ -64,10 +63,70 @@ public class ChatActivity extends BaseActivity {
     //    #232 ends
 //    #280 starts
     private String conversionId = null;
-//    #280 ends
+    //    #281 starts
+    private final OnCompleteListener<QuerySnapshot> conversionOnCompleteListener = task -> {
+
+        if (task.isSuccessful() && task.getResult() != null && task.getResult().getDocuments().size() > 0) {
+            DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
+            conversionId = documentSnapshot.getId();
+        }
+    };
+    //    #245 starts Next logic is a bit complicated. Make sure you follow carefully
+    //eventlistener from firebase firestore
+    private final EventListener<QuerySnapshot> eventListener = (value, error) -> {
+        if (error != null) {
+            return;
+        }
+        if (value != null) {
+            int count = chatMessages.size();
+            //document change firebasestore
+            for (DocumentChange documentChange : value.getDocumentChanges()) {
+//                #246 starts
+                if (documentChange.getType() == DocumentChange.Type.ADDED) {
+
+//                    #247 starts the whole block part of the 245 comes into (if created only one top{})here
+
+                    ChatMessage chatMessage = new ChatMessage();
+                    chatMessage.senderId = documentChange.getDocument().getString(Constants.KEY_SENDER_ID);
+                    chatMessage.receiverId = documentChange.getDocument().getString(Constants.KEY_RECEIVER_ID);
+                    chatMessage.message = documentChange.getDocument().getString(Constants.KEY_MESSAGE);
+                    chatMessage.dateTime = getReadableDateTime(documentChange.getDocument().getDate(Constants.KEY_TIMESTAMP));
+                    chatMessage.dateObject = documentChange.getDocument().getDate(Constants.KEY_TIMESTAMP);
+                    chatMessages.add(chatMessage);
+
+//                    #247 ends
+                }
+//                #246 ends
+
+
+            }
+//            #248 starts
+            chatMessages.sort(Comparator.comparing(obj -> obj.dateObject));
+            if (count == 0) {
+                chatAdapter.notifyDataSetChanged();
+
+            } else {
+                chatAdapter.notifyItemRangeInserted(chatMessages.size(), chatMessages.size());
+                binding.chatRecyclerView.smoothScrollToPosition(chatMessages.size() - 1);
+            }
+            binding.chatRecyclerView.setVisibility(View.VISIBLE);
+//            #248 ends
+        }
+//        #249 starts
+        binding.progressBar.setVisibility(View.GONE);
+//        #249 ends
+//    #284 starts
+        if (conversionId == null) {
+            checkForConversion();
+        }
+//    #284 ends
+    };
+    //    #280 ends
 //    #311 starts
     private Boolean isReceiverAvailable = false;
-//    #311 ends
+//    #234 ends
+
+    //    #311 ends
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,9 +147,10 @@ public class ChatActivity extends BaseActivity {
         listenMessages();
 //        #251 ends and clean unused imports
     }
+//    #241 ends
 
-//    #234 starts
-    private void init(){
+    //    #234 starts
+    private void init() {
         preferenceManager = new PreferenceManager(getApplicationContext());
         chatMessages = new ArrayList<>();
         chatAdapter = new ChatAdapter(
@@ -101,20 +161,19 @@ public class ChatActivity extends BaseActivity {
         binding.chatRecyclerView.setAdapter(chatAdapter);
         database = FirebaseFirestore.getInstance();
     }
-//    #234 ends
 
-//    #241 starts
-    private void sendMessage(){
+    //    #241 starts
+    private void sendMessage() {
         HashMap<String, Object> message = new HashMap<>();
-        message.put(Constants.KEY_SENDER_ID, preferenceManager. getString(Constants.KEY_USER_ID));
+        message.put(Constants.KEY_SENDER_ID, preferenceManager.getString(Constants.KEY_USER_ID));
         message.put(Constants.KEY_RECEIVER_ID, receiverUser.id);
         message.put(Constants.KEY_MESSAGE, binding.inputMessage.getText().toString());
         message.put(Constants.KEY_TIMESTAMP, new Date());
         database.collection(Constants.KEY_COLLECTION_CHAT).add(message);
 //        #287 starts
-        if(conversionId != null) {
+        if (conversionId != null) {
             updateConversion(binding.inputMessage.getText().toString());
-        }else{
+        } else {
             HashMap<String, Object> conversion = new HashMap<>();
             conversion.put(Constants.KEY_SENDER_ID, preferenceManager.getString(Constants.KEY_USER_ID));
             conversion.put(Constants.KEY_SENDER_NAME, preferenceManager.getString(Constants.KEY_NAME));
@@ -129,8 +188,8 @@ public class ChatActivity extends BaseActivity {
 //        #287 ends go to firestore database check collection and delete chat collection then run again it with multiple devices.
 // and start message again with two users you will see in database will create chat and conversation collections.
 //        #327 starts
-        if(!isReceiverAvailable) {
-            try{
+        if (!isReceiverAvailable) {
+            try {
                 JSONArray tokens = new JSONArray();
                 tokens.put(receiverUser.token);
 
@@ -141,11 +200,11 @@ public class ChatActivity extends BaseActivity {
                 data.put(Constants.KEY_MESSAGE, binding.inputMessage.getText().toString());
 
                 JSONObject body = new JSONObject();
-                body.put(Constants.REMOTE_MSG_DATA,data);
+                body.put(Constants.REMOTE_MSG_DATA, data);
                 body.put(Constants.REMOTE_MSG_REGISTRATION_IDS, tokens);
 
                 sendNotification(body.toString());
-            }catch (Exception exception){
+            } catch (Exception exception) {
                 showToast(exception.getMessage());
             }
         }
@@ -153,13 +212,14 @@ public class ChatActivity extends BaseActivity {
 //        tokens for our accounts. Otherwise, it will throw an 'invalidRegistration' error message.
         binding.inputMessage.setText(null);
     }
-//    #241 ends
+//    #323 ends
 
-//    #322 starts
-    public void showToast(String message){
+    //    #322 starts
+    public void showToast(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
-//    #322 ends
+
+    //    #322 ends
 //    #323 starts
     private void sendNotification(String messageBody) {
         ApiClient.getClient().create(ApiService.class).sendMessage(
@@ -167,33 +227,33 @@ public class ChatActivity extends BaseActivity {
                 messageBody
         ).enqueue(new Callback<String>() {
             @Override
-            public void onResponse(@NonNull Call<String> call,@NonNull Response<String> response) {
+            public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
 //                #324 starts
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     try {
                         if (response.body() != null) {
                             JSONObject responseJson = new JSONObject(response.body());
                             JSONArray results = responseJson.getJSONArray("results");
-                            if(responseJson.getInt("failure") == 1) {
+                            if (responseJson.getInt("failure") == 1) {
                                 JSONObject error = (JSONObject) results.get(0);
                                 showToast(error.getString("error"));
                                 return;
                             }
                         }
 
-                    }catch (JSONException e) {
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     showToast("Notification sent successfully");
-                }else {
-                    showToast("Error: " + response.code() );
+                } else {
+                    showToast("Error: " + response.code());
                 }
 //                    #324 ends
 
             }
 
             @Override
-            public void onFailure(@NonNull Call<String> call,@NonNull Throwable t) {
+            public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
 
 //                #325 starts
                 showToast(t.getMessage());
@@ -201,46 +261,48 @@ public class ChatActivity extends BaseActivity {
             }
         });
     }
-//    #323 ends
+//    #250 ends
 
-//    #250 starts again follow correctly
+    //    #250 starts again follow correctly
 //    #312 starts
-    private void listenAvailabilityOfReceiver(){
+    private void listenAvailabilityOfReceiver() {
         database.collection(Constants.KEY_COLLECTION_USERS).document(
                 receiverUser.id
         ).addSnapshotListener(ChatActivity.this, (value, error) -> {
-           if(error != null) {
-               return;
-           }
-           if(value != null){
-               if(value.getLong(Constants.KEY_AVAILABILITY) != null) {
-                   int availability = Objects.requireNonNull(
-                           value.getLong(Constants.KEY_AVAILABILITY)
-                   ).intValue();
-                   isReceiverAvailable = availability == 1;
-               }
-               //            #319 starts
-               receiverUser.token = value.getString(Constants.KEY_FCM_TOKEN);
+            if (error != null) {
+                return;
+            }
+            if (value != null) {
+                if (value.getLong(Constants.KEY_AVAILABILITY) != null) {
+                    int availability = Objects.requireNonNull(
+                            value.getLong(Constants.KEY_AVAILABILITY)
+                    ).intValue();
+                    isReceiverAvailable = availability == 1;
+                }
+                //            #319 starts
+                receiverUser.token = value.getString(Constants.KEY_FCM_TOKEN);
 //            #319 ends
 //               #337 Starts
-               if(receiverUser.image == null) {
-                   receiverUser.image = value.getString(Constants.KEY_IMAGE);
-                   chatAdapter.setReceiverProfileImage(getBitmapFromEncodedString(receiverUser.image));
-                   chatAdapter.notifyItemRangeChanged(0,chatMessages.size());
-               }
+                if (receiverUser.image == null) {
+                    receiverUser.image = value.getString(Constants.KEY_IMAGE);
+                    chatAdapter.setReceiverProfileImage(getBitmapFromEncodedString(receiverUser.image));
+                    chatAdapter.notifyItemRangeChanged(0, chatMessages.size());
+                }
 //              #337 ends
-           }
+            }
 //           #315 Starts
-           if(isReceiverAvailable){
-               binding.textAvailability.setVisibility(View.VISIBLE);
+            if (isReceiverAvailable) {
+                binding.textAvailability.setVisibility(View.VISIBLE);
 
-           } else {
-               binding.textAvailability.setVisibility(View.GONE);
-           }
+            } else {
+                binding.textAvailability.setVisibility(View.GONE);
+            }
 //               #315 ends
         });
     }
-//    #312 ends
+//    @245 ends
+
+    //    #312 ends
     private void listenMessages() {
         database.collection(Constants.KEY_COLLECTION_CHAT)
                 .whereEqualTo(Constants.KEY_SENDER_ID, preferenceManager.getString(Constants.KEY_USER_ID))
@@ -252,84 +314,31 @@ public class ChatActivity extends BaseActivity {
                 .whereEqualTo(Constants.KEY_RECEIVER_ID, preferenceManager.getString(Constants.KEY_USER_ID))
                 .addSnapshotListener(eventListener);
     }
-//    #250 ends
+//    #233 ends
 
-//    #245 starts Next logic is a bit complicated. Make sure you follow carefully
-    //eventlistener from firebase firestore
-    private final EventListener<QuerySnapshot> eventListener = (value, error) -> {
-        if(error != null) {
-            return;
-        }
-        if(value != null) {
-            int count = chatMessages.size();
-            //document change firebasestore
-            for (DocumentChange documentChange : value.getDocumentChanges()) {
-//                #246 starts
-                if(documentChange.getType() == DocumentChange.Type.ADDED) {
-
-//                    #247 starts the whole block part of the 245 comes into (if created only one top{})here
-
-                    ChatMessage chatMessage = new ChatMessage();
-                    chatMessage.senderId = documentChange.getDocument().getString(Constants.KEY_SENDER_ID);
-                    chatMessage.receiverId = documentChange.getDocument().getString(Constants.KEY_RECEIVER_ID);
-                    chatMessage.message = documentChange.getDocument().getString(Constants.KEY_MESSAGE);
-                    chatMessage.dateTime = getReadableDateTime(documentChange.getDocument().getDate(Constants.KEY_TIMESTAMP));
-                    chatMessage.dateObject = documentChange.getDocument().getDate(Constants.KEY_TIMESTAMP);
-                    chatMessages.add(chatMessage);
-
-//                    #247 ends
-                }
-//                #246 ends
-
-
-            }
-//            #248 starts
-            Collections.sort(chatMessages, (obj1, obj2) -> obj1.dateObject.compareTo(obj2.dateObject));
-            if(count ==0) {
-                chatAdapter.notifyDataSetChanged();
-
-            }else {
-                chatAdapter.notifyItemRangeInserted(chatMessages.size(), chatMessages.size());
-                binding.chatRecyclerView.smoothScrollToPosition(chatMessages.size() -1);
-            }
-            binding.chatRecyclerView.setVisibility(View.VISIBLE);
-//            #248 ends
-        }
-//        #249 starts
-        binding.progressBar.setVisibility(View.GONE);
-//        #249 ends
-//    #284 starts
-        if(conversionId == null) {
-            checkForConversion();
-        }
-//    #284 ends
-    };
-//    @245 ends
-
-
-//    #233 starts
+    //    #233 starts
     private Bitmap getBitmapFromEncodedString(String encodedImage) {
 //        #335 starts
-        if(encodedImage != null) {
+        if (encodedImage != null) {
 //            #336 below codes added into the if block
             byte[] bytes = Base64.decode(encodedImage, Base64.DEFAULT);
-            return BitmapFactory.decodeByteArray(bytes, 0,bytes.length);
-        }else {
+            return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        } else {
             return null;
         }
 //        #335 ends
 
     }
-//    #233 ends
+//    #204 ends
 
-//    #204 starts
-    private void loadReceiverDetails(){
+    //    #204 starts
+    private void loadReceiverDetails() {
         receiverUser = (User) getIntent().getSerializableExtra(Constants.KEY_USER);
         binding.textName.setText(receiverUser.name);
     }
-//    #204 ends
+//    #206 ends
 
-//    #206 starts
+    //    #206 starts
     private void setListeners() {
 
         binding.imageBack.setOnClickListener(v -> onBackPressed());
@@ -350,23 +359,23 @@ public class ChatActivity extends BaseActivity {
         }
 242 comments ended here         */
     }
-//    #206 ends
-
-//    #244 starts
-    private String getReadableDateTime(Date date){
-        return new SimpleDateFormat("MMMM dd, yyyy - hh:mm a", Locale.getDefault()).format(date);
-    }
 //    #244 ends
 
-//    #285 starts
+    //    #244 starts
+    private String getReadableDateTime(Date date) {
+        return new SimpleDateFormat("MMMM dd, yyyy - hh:mm a", Locale.getDefault()).format(date);
+    }
+//    #285 ends
+
+    //    #285 starts
     private void addConversion(HashMap<String, Object> conversion) {
         database.collection(Constants.KEY_COLLECTION_CONVERSATIONS)
                 .add(conversion)
                 .addOnSuccessListener(documentReference -> conversionId = documentReference.getId());
     }
-//    #285 ends
+//    #286 ends
 
-//    #286 starts
+    //    #286 starts
     private void updateConversion(String message) {
         DocumentReference documentReference =
                 database.collection(Constants.KEY_COLLECTION_CONVERSATIONS).document(conversionId);
@@ -375,24 +384,25 @@ public class ChatActivity extends BaseActivity {
                 Constants.KEY_TIMESTAMP, new Date()
         );
     }
-//    #286 ends
+//    #283 ends
 
-//    #283 starts
-    private void checkForConversion(){
-        if(chatMessages.size() != 0) {
+    //    #283 starts
+    private void checkForConversion() {
+        if (chatMessages.size() != 0) {
             checkForConversionRemotely(
                     preferenceManager.getString(Constants.KEY_USER_ID),
                     receiverUser.id
 
-            );checkForConversionRemotely(
+            );
+            checkForConversionRemotely(
                     receiverUser.id,
                     preferenceManager.getString(Constants.KEY_USER_ID)
             );
         }
     }
-//    #283 ends
+//    #282 ends
 
-//    #282 starts
+    //    #282 starts
     private void checkForConversionRemotely(String senderId, String receiverId) {
         database.collection(Constants.KEY_COLLECTION_CONVERSATIONS)
                 .whereEqualTo(Constants.KEY_SENDER_ID, senderId)
@@ -400,17 +410,8 @@ public class ChatActivity extends BaseActivity {
                 .get()
                 .addOnCompleteListener(conversionOnCompleteListener);
     }
-//    #282 ends
 
-    //    #281 starts
-    private final OnCompleteListener<QuerySnapshot> conversionOnCompleteListener = task -> {
-
-        if(task.isSuccessful() && task.getResult() != null && task.getResult().getDocuments().size() >0){
-            DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
-            conversionId = documentSnapshot.getId();
-        }
-    };
-//            #281 ends
+    //            #281 ends
 //    #317 starts
     @Override
     protected void onResume() {

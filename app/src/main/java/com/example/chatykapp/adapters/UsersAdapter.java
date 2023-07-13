@@ -16,15 +16,16 @@ import com.example.chatykapp.models.User;
 import java.util.List;
 
 //#128 adapters package and this file
-//#136 extends RecylerView....
-public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHolder>{
+//#136 extends RecyclerView....
+public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHolder> {
 
-//    #135 starts
+    //    #135 starts
     private final List<User> users;
 
-//    #193 starts
+    //    #193 starts
     private final UserListener userListener;
-//    #193 ends
+
+    //    #193 ends
 //    #194 starts and adds another parameter (UserListener)  into public UsersAdapter
     //Generate constructor
     public UsersAdapter(List<User> users, UserListener userListener) {
@@ -35,7 +36,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
     }
     //    #135 ends
 
-//    #137 startsgenerate implement method for recylerview extension in 136
+//    #137 starts generate implement method for recyclerview extension in 136
 
     @NonNull
     @Override
@@ -65,12 +66,21 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
     }
 //#137 ends
 
+    //    #129
+    private Bitmap getUserImage(String encodedImage) {
+        byte[] bytes = Base64.decode(encodedImage, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+    }
+//    #130 ends As we' ve enabled viewBinding for our project, the binding class for each XML layout will be generated automatically.
+    //Here, 'ItemContainerUserBinding' class is automatically generated from our layout file: 'item_container_user'
+
     //    #130 starts
     class UserViewHolder extends RecyclerView.ViewHolder {
 
-//        #131 starts
-        ItemContainerUserBinding binding;
-//        #131 ends
+        //        #131 starts
+        final ItemContainerUserBinding binding;
+
+        //        #131 ends
         UserViewHolder(ItemContainerUserBinding itemContainerUserBinding) {
             super(itemContainerUserBinding.getRoot());
 
@@ -78,7 +88,8 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
             binding = itemContainerUserBinding;
 //            #132 ends
         }
-//        #133 starts You may see more than one "User" class here. Make sure you select the one from our
+
+        //        #133 starts You may see more than one "User" class here. Make sure you select the one from our
 //    "models" package.
         void setUserData(User user) {
             binding.textName.setText(user.name);
@@ -88,13 +99,5 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
             binding.getRoot().setOnClickListener(v -> userListener.onUserClicked(user));
         }
 //    #134 ends
-    }
-//    #130 ends As we' ve enabled viewBinding for our project, the binding class for each XML layout will be generated automatically.
-    //Here, 'ItemContainerUserBinding' class is automatically generated from our layout file: 'item_container_user'
-
-//    #129
-    private Bitmap getUserImage(String encodedImage){
-        byte[] bytes = Base64.decode(encodedImage, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 }
