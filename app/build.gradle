@@ -9,13 +9,13 @@ plugins {
 
 android {
     namespace 'com.example.chatykapp'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
 //        #32This id is used for GoogleFirebase
         applicationId "com.example.chatykapp"
         minSdk 24
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 //        #57
@@ -45,7 +45,7 @@ android {
 dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
@@ -64,10 +64,10 @@ dependencies {
     //#53 Fo to FirebaseConsole/FirestoreDatabase/StartinTestMode
 
 //    #36 as you can see, dependency for firebase cloud messaging is added
-    implementation 'com.google.firebase:firebase-messaging-ktx:23.2.0'
+    implementation 'com.google.firebase:firebase-messaging-ktx:23.4.0'
 //    #51 as you can see, dependency for the firestore database is added, but there is a newer version available,
     //so I am changing the version to a newer one
-    implementation 'com.google.firebase:firebase-firestore-ktx:24.7.0'
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.10.0'
 /*#56 Enabling MultiDex
 Android application (APK) files contain executable bytecode files in the form of Dalvik Executable(DEX) files,
 which contain the compiled code used to run your app. The Dalvik Executable specification limits the total number of
